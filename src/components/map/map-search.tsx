@@ -95,7 +95,9 @@ export default function MapSearch() {
         map.flyTo({
           center: coordinates,
           zoom: 14,
-          speed: 1.5,
+          speed: 4,
+          duration: 1000,
+          essential: true,
         });
 
         setDisplayValue(suggestion.name);
