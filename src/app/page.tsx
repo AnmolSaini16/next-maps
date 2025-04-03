@@ -23,7 +23,7 @@ export default function Home() {
         initialViewState={{
           longitude: 78.9629,
           latitude: 20.5937,
-          zoom: 3.5,
+          zoom: 3.4,
         }}
       >
         <MapSearch />
