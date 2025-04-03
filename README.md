@@ -30,7 +30,7 @@ Interactive map app built with Next.js App Router, styled with Tailwind CSS, and
 ## 🚀 Getting Started
 First, install dependencies and start the development server:
 ```sh
-git clone https://github.com/your-username/your-repo.git
+git clone https://github.com/AnmolSaini16/next-maps.git
 cd your-repo
 npm install
 npm run dev
