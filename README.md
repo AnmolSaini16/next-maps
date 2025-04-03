@@ -41,14 +41,6 @@ NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_access_token
 NEXT_PUBLIC_MAPBOX_SESSION_TOKEN=your_uuidv4_session_token
 ```
 
-## 📁 Structure
-```sh
-app/
- └── page.tsx          # Main page with map
-components/            # Reusable UI components
-lib/mapbox.ts          # Mapbox setup & utils
-```
-
 ## 📦 Deployment
 Deploy on [Vercel](https://vercel.com) in seconds.
 
@@ -61,5 +53,15 @@ Deploy on [Vercel](https://vercel.com) in seconds.
 - [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/guides)
 
 - [Tailwind CSS](https://tailwindcss.com/docs)
+
+## 🤝 Contributing
+Contributions are welcome!
+If you’d like to improve this project, feel free to fork it and open a pull request.
+
+## ☕ Support Me
+If you find this project useful, consider supporting me:
+- Buy me a coffee
+- Sponsor on GitHub
+
 
 
