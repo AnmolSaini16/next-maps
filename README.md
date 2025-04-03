@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🗺️ Mapbox + Next.js + shadcn/ui + Tailwind
+Interactive map app built with Next.js App Router, styled with Tailwind CSS, and powered by Mapbox GL JS. UI components via shadcn/ui.
 
-## Getting Started
+## ⚡ Stack
+- Next.js (App Router)
 
-First, run the development server:
+- Tailwind CSS
 
-```bash
+- shadcn/ui
+
+- Mapbox GL JS
+
+- Mapbox Searchbox API
+
+- Geist font (via next/font)
+  
+
+## 🔍 Features
+- 📍 Mapbox GL interactive map
+
+- 🔎 Mapbox Searchbox API
+
+- 🎨 Clean UI with shadcn/ui
+
+- ⚡ Responsive & fast
+
+- 📱 Mobile-friendly layout
+  
+
+## 🚀 Getting Started
+First, install dependencies and start the development server:
+```sh
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+### 🔐 Environment Variables
+```sh
+NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_access_token
+NEXT_PUBLIC_MAPBOX_SESSION_TOKEN=your_uuidv4_session_token
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📁 Structure
+```sh
+app/
+ └── page.tsx          # Main page with map
+components/            # Reusable UI components
+lib/mapbox.ts          # Mapbox setup & utils
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📦 Deployment
+Deploy on [Vercel](https://vercel.com) in seconds.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+## 📚 Docs
+- [Next.js Docs](https://nextjs.org/docs)
 
-To learn more about Next.js, take a look at the following resources:
+- [shadcn/ui Docs](https://ui.shadcn.com/docs)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/guides)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [Tailwind CSS](https://tailwindcss.com/docs)
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
