@@ -21,9 +21,9 @@ export default function Home() {
       <MapProvider
         mapContainerRef={mapContainerRef}
         initialViewState={{
-          longitude: 78.9629,
-          latitude: 20.5937,
-          zoom: 3.4,
+          longitude: -122.4194,
+          latitude: 37.7749,
+          zoom: 10,
         }}
       >
         <MapSearch />

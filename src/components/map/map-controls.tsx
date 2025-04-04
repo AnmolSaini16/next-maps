@@ -16,7 +16,7 @@ export default function MapCotrols() {
   };
 
   return (
-    <div className="absolute bottom-8 right-4 z-10 bg-background p-2 rounded-lg shadow-lg flex flex-col gap-2">
+    <aside className="absolute bottom-8 right-4 z-10 bg-background p-2 rounded-lg shadow-lg flex flex-col gap-2">
       <Button variant="ghost" size="icon" onClick={zoomIn}>
         <PlusIcon className="w-5 h-5" />
         <span className="sr-only">Zoom in</span>
@@ -25,6 +25,6 @@ export default function MapCotrols() {
         <MinusIcon className="w-5 h-5" />
         <span className="sr-only">Zoom out</span>
       </Button>
-    </div>
+    </aside>
   );
 }

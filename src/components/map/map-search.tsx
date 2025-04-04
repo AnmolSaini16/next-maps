@@ -55,7 +55,7 @@ export default function MapSearch() {
             process.env.NEXT_PUBLIC_MAPBOX_TOKEN
           }&session_token=${
             process.env.NEXT_PUBLIC_MAPBOX_SESSION_TOKEN
-          }&limit=5`
+          }&country=US&limit=5&proximity=-122.4194,37.7749`
         );
 
         const data = await res.json();
@@ -127,7 +127,7 @@ export default function MapSearch() {
 
   return (
     <>
-      <div className="absolute top-4 left-1/2 sm:left-4 z-10 w-[90vw] sm:w-[350px] -translate-x-1/2 sm:translate-x-0 rounded-lg shadow-lg">
+      <section className="absolute top-4 left-1/2 sm:left-4 z-10 w-[90vw] sm:w-[350px] -translate-x-1/2 sm:translate-x-0 rounded-lg shadow-lg">
         <Command className="rounded-lg">
           <div
             className={cn(
@@ -196,7 +196,7 @@ export default function MapSearch() {
             </CommandList>
           )}
         </Command>
-      </div>
+      </section>
 
       {selectedLocations.map((location) => (
         <LocationMarker

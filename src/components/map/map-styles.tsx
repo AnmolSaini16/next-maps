@@ -66,23 +66,21 @@ export default function MapStyles() {
   }, [map, activeStyle]);
 
   return (
-    <Tabs
-      value={activeStyle}
-      onValueChange={handleChange}
-      className="absolute bottom-4 left-4 z-10"
-    >
-      <TabsList className="bg-background shadow-lg">
-        {STYLE_OPTIONS.map((style) => (
-          <TabsTrigger
-            key={style.id}
-            value={style.id}
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-sm flex items-center sm:px-3 sm:py-1.5"
-          >
-            {style.icon}
-            <span className="hidden sm:inline">{style.label}</span>
-          </TabsTrigger>
-        ))}
-      </TabsList>
-    </Tabs>
+    <aside className="absolute bottom-4 left-4 z-10">
+      <Tabs value={activeStyle} onValueChange={handleChange}>
+        <TabsList className="bg-background shadow-lg">
+          {STYLE_OPTIONS.map((style) => (
+            <TabsTrigger
+              key={style.id}
+              value={style.id}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-sm flex items-center sm:px-3 sm:py-1.5"
+            >
+              {style.icon}
+              <span className="hidden sm:inline">{style.label}</span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
+    </aside>
   );
 }
