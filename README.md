@@ -1,6 +1,8 @@
 # 🗺️ Mapbox + Next.js + shadcn/ui + Tailwind
 Interactive map app built with Next.js App Router, styled with Tailwind CSS, and powered by Mapbox GL JS. UI components via shadcn/ui.
 
+https://github.com/user-attachments/assets/9caa968c-bfe1-44bf-a1dc-b375070a3e93
+
 ## ⚡ Stack
 - Next.js (App Router)
 
