@@ -52,6 +52,7 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
       closeButton={true}
       closeOnClick={false}
       className="location-popup"
+      focusAfterOpen={false}
     >
       <div className="w-[300px] sm:w-[350px]">
         <div className="flex items-start gap-3">
