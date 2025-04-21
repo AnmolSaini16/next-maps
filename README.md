@@ -3,6 +3,9 @@ Interactive map app built with Next.js App Router, styled with Tailwind CSS, and
 
 https://github.com/user-attachments/assets/9caa968c-bfe1-44bf-a1dc-b375070a3e93
 
+![Mobile view](https://github.com/user-attachments/assets/dc99d4e4-d39d-4eeb-990e-d5c5afb6f2b1)
+
+
 ## ⚡ Stack
 - Next.js (App Router)
 
