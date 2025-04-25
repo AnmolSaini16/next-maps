@@ -11,6 +11,7 @@ type PopupProps = {
   longitude?: number;
   onClose?: () => void;
   marker?: mapboxgl.Marker;
+  schoolType?: string; // Add schoolType prop
 } & mapboxgl.PopupOptions;
 
 export default function Popup({
@@ -20,6 +21,7 @@ export default function Popup({
   marker,
   onClose,
   className,
+  schoolType, // Destructure schoolType
   ...props
 }: PopupProps) {
   const { map } = useMap();
@@ -78,5 +80,40 @@ export default function Popup({
     handleClose,
   ]);
 
-  return createPortal(children, container);
+  return createPortal(
+    <div
+      style={{
+        backgroundColor: getSchoolTypeColor(schoolType), // Apply dynamic background color
+        padding: "10px",
+        borderRadius: "8px",
+      }}
+    >
+      {children}
+    </div>,
+    container
+  );
+}
+
+// Helper function to get the color based on school type
+function getSchoolTypeColor(schoolType?: string): string {
+  switch (schoolType) {
+    case "1012":
+      return "#537A5A"; // Folkeskoler
+    case "1015":
+      return "#9AE19D"; // Specialskoler
+    case "1014":
+      return "#ED6B86"; // Kommunale ungdomsskoler
+    case "1013":
+      return "#F2C94C"; // Friskoler og private skoler
+    case "3001":
+      return "#F2994A"; // Behandlingsskoler
+    case "1011":
+      return "#BB6BD9"; // Efterskoler
+    case "1019":
+      return "#F2C94C"; // Særlige tilbud
+    case "3002":
+      return "#F2994A"; // Specialundervisning
+    default:
+      return "#ffffff"; // Default white
+  }
 }
