@@ -1,4 +1,4 @@
-# 🗺️ Modern Map in Next.js with Mapbox and shadcn/ui
+# 🗺️ Modern Map in Next.js with Mapbox
 Lightweight, interactive and customizable map built with Next.js App Router, styled with Tailwind CSS, and powered by Mapbox GL JS. UI components via shadcn/ui.
 
 https://github.com/user-attachments/assets/9caa968c-bfe1-44bf-a1dc-b375070a3e93
