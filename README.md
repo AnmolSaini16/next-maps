@@ -7,28 +7,21 @@ https://github.com/user-attachments/assets/9caa968c-bfe1-44bf-a1dc-b375070a3e93
 
 
 ## ⚡ Stack
+
 - Next.js (App Router)
-
 - Tailwind CSS
-
 - shadcn/ui
-
 - Mapbox GL JS
-
 - Mapbox Searchbox API
-
 - Geist font (via next/font)
   
 
 ## 🔍 Features
+
 - 📍 Mapbox GL interactive map
-
 - 🔎 Mapbox Searchbox API
-
 - 🎨 Clean UI with shadcn/ui
-
 - ⚡ Responsive & fast
-
 - 📱 Mobile-friendly layout
   
 
@@ -52,11 +45,8 @@ Deploy on [Vercel](https://vercel.com) in seconds.
 
 ## 📚 Docs
 - [Next.js Docs](https://nextjs.org/docs)
-
 - [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/guides)
-
 - [Tailwind CSS](https://tailwindcss.com/docs)
-
 - [shadcn/ui Docs](https://ui.shadcn.com/docs)
 
 ## 🤝 Contributing
