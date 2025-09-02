@@ -4,8 +4,6 @@ Lightweight, interactive and customizable map built with Next.js App Router, sty
 
 https://github.com/user-attachments/assets/9caa968c-bfe1-44bf-a1dc-b375070a3e93
 
-## 📸 Showcase
-
 <div align="center">
   <img src="public/showcase/01.png" alt="Map Application Screenshot 1" width="800" />
   <br><br>
@@ -13,7 +11,7 @@ https://github.com/user-attachments/assets/9caa968c-bfe1-44bf-a1dc-b375070a3e93
   <br><br>
   <img src="public/showcase/03.png" alt="Map Application Screenshot 3" width="800" />
   <br><br>
-  <img src="public/showcase/mobile.png" alt="Map Application Screenshot 4" width="800" />
+  <img src="public/showcase/mobile.png" alt="Map Application Screenshot 4" width="300" />
 </div>
 
 ## ⚡ Stack
