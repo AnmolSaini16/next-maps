@@ -11,7 +11,7 @@ export default function Home() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div className="w-screen h-screen">
+    <div className="relative w-screen h-screen">
       <div
         id="map-container"
         ref={mapContainerRef}

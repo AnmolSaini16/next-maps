@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Loader, MapPin, X } from "lucide-react";
+
 import {
   Command,
   CommandInput,
@@ -8,9 +11,6 @@ import {
   CommandGroup,
   CommandItem,
 } from "@/components/ui/command";
-import { Loader2, MapPin, X } from "lucide-react";
-import { useState, useEffect } from "react";
-
 import { useDebounce } from "@/hooks/useDebounce";
 import { useMap } from "@/context/map-context";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,8 @@ import {
   LocationFeature,
   LocationSuggestion,
 } from "@/lib/mapbox/utils";
+import { searchLocations, retrieveLocation } from "@/lib/mapbox/api";
+import { MAP_CONSTANTS } from "@/lib/mapbox/constants";
 import { LocationMarker } from "../location-marker";
 import { LocationPopup } from "../location-popup";
 
@@ -34,96 +36,141 @@ export default function MapSearch() {
   const [selectedLocations, setSelectedLocations] = useState<LocationFeature[]>(
     []
   );
-  const debouncedQuery = useDebounce(query, 400);
+  const [error, setError] = useState<string | null>(null);
 
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const debouncedQuery = useDebounce(query, MAP_CONSTANTS.SEARCH.DEBOUNCE_MS);
+
+  // Search for locations
   useEffect(() => {
+    // Cancel previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
     if (!debouncedQuery.trim()) {
       setResults([]);
       setIsOpen(false);
+      setError(null);
       return;
     }
 
-    const searchLocations = async () => {
+    const performSearch = async () => {
       setIsSearching(true);
       setIsOpen(true);
+      setError(null);
+
+      // Create new abort controller for this request
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
 
       try {
-        const res = await fetch(
-          `https://api.mapbox.com/search/searchbox/v1/suggest?q=${encodeURIComponent(
-            debouncedQuery
-          )}&access_token=${
-            process.env.NEXT_PUBLIC_MAPBOX_TOKEN
-          }&session_token=${
-            process.env.NEXT_PUBLIC_MAPBOX_SESSION_TOKEN
-          }&country=US&limit=5&proximity=-122.4194,37.7749`
-        );
+        const suggestions = await searchLocations({
+          query: debouncedQuery,
+          country: MAP_CONSTANTS.SEARCH.DEFAULT_COUNTRY,
+          limit: MAP_CONSTANTS.SEARCH.DEFAULT_LIMIT,
+          proximity: MAP_CONSTANTS.SEARCH.DEFAULT_PROXIMITY,
+          signal: abortController.signal,
+        });
 
-        const data = await res.json();
-        setResults(data.suggestions ?? []);
+        if (abortController.signal.aborted) return;
+
+        setResults(suggestions);
       } catch (err) {
-        console.error("Geocoding error:", err);
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
+
+        console.error("Search error:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to search locations"
+        );
         setResults([]);
       } finally {
-        setIsSearching(false);
+        if (!abortController.signal.aborted) {
+          setIsSearching(false);
+        }
       }
     };
 
-    searchLocations();
+    performSearch();
+
+    // Cleanup: abort request on unmount or query change
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [debouncedQuery]);
 
   // Handle input change
-  const handleInputChange = (value: string) => {
+  const handleInputChange = useCallback((value: string) => {
     setQuery(value);
     setDisplayValue(value);
-  };
+  }, []);
 
   // Handle location selection
-  const handleSelect = async (suggestion: LocationSuggestion) => {
-    try {
+  const handleSelect = useCallback(
+    async (suggestion: LocationSuggestion) => {
+      if (!map) return;
+
       setIsSearching(true);
+      setError(null);
 
-      const res = await fetch(
-        `https://api.mapbox.com/search/searchbox/v1/retrieve/${suggestion.mapbox_id}?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}&session_token=${process.env.NEXT_PUBLIC_MAPBOX_SESSION_TOKEN}`
-      );
+      try {
+        const features = await retrieveLocation(suggestion.mapbox_id);
 
-      const data = await res.json();
-      const featuresData = data?.features;
+        if (features.length === 0) {
+          setError("No location details found");
+          return;
+        }
 
-      if (map && featuresData?.length > 0) {
-        const coordinates = featuresData[0]?.geometry?.coordinates;
+        const [feature] = features;
+        const coordinates = feature.geometry.coordinates;
 
         map.flyTo({
           center: coordinates,
-          zoom: 14,
-          speed: 4,
-          duration: 1000,
+          zoom: MAP_CONSTANTS.FLY_TO.ZOOM,
+          speed: MAP_CONSTANTS.FLY_TO.SPEED,
+          duration: MAP_CONSTANTS.FLY_TO.DURATION,
           essential: true,
         });
 
         setDisplayValue(suggestion.name);
-
-        setSelectedLocations(featuresData);
-        setSelectedLocation(featuresData[0]);
-
+        setSelectedLocations(features);
         setResults([]);
         setIsOpen(false);
+      } catch (err) {
+        console.error("Retrieve error:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to retrieve location"
+        );
+      } finally {
+        setIsSearching(false);
       }
-    } catch (err) {
-      console.error("Retrieve error:", err);
-    } finally {
-      setIsSearching(false);
-    }
-  };
+    },
+    [map]
+  );
 
   // Clear search
-  const clearSearch = () => {
+  const clearSearch = useCallback(() => {
+    // Abort any pending requests
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
     setQuery("");
     setDisplayValue("");
     setResults([]);
     setIsOpen(false);
+    setError(null);
     setSelectedLocation(null);
     setSelectedLocations([]);
-  };
+  }, []);
+
+  const hasResults = results.length > 0;
+  const showEmptyState =
+    isOpen && !isSearching && query.trim() && !hasResults && !error;
 
   return (
     <>
@@ -145,16 +192,29 @@ export default function MapSearch() {
               <X
                 className="size-4 shrink-0 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
                 onClick={clearSearch}
+                aria-label="Clear search"
               />
             )}
             {isSearching && (
-              <Loader2 className="size-4 shrink-0 text-primary animate-spin" />
+              <Loader
+                className="size-4 shrink-0 text-primary animate-spin"
+                aria-label="Searching"
+              />
             )}
           </div>
 
           {isOpen && (
             <CommandList className="max-h-60 overflow-y-auto">
-              {!query.trim() || isSearching ? null : results.length === 0 ? (
+              {error ? (
+                <CommandEmpty className="py-6 text-center">
+                  <div className="flex flex-col items-center justify-center space-y-1">
+                    <p className="text-sm font-medium text-destructive">
+                      Error occurred
+                    </p>
+                    <p className="text-xs text-muted-foreground">{error}</p>
+                  </div>
+                </CommandEmpty>
+              ) : showEmptyState ? (
                 <CommandEmpty className="py-6 text-center">
                   <div className="flex flex-col items-center justify-center space-y-1">
                     <p className="text-sm font-medium">No locations found</p>
@@ -163,7 +223,7 @@ export default function MapSearch() {
                     </p>
                   </div>
                 </CommandEmpty>
-              ) : (
+              ) : hasResults ? (
                 <CommandGroup>
                   {results.map((location) => (
                     <CommandItem
@@ -173,18 +233,18 @@ export default function MapSearch() {
                       className="flex items-center py-3 px-2 cursor-pointer hover:bg-accent rounded-md"
                     >
                       <div className="flex items-center space-x-2">
-                        <div className="bg-primary/10 p-1.5 rounded-full">
+                        <div className="bg-primary/10 p-1.5 rounded-full shrink-0">
                           {location.maki && iconMap[location.maki] ? (
                             iconMap[location.maki]
                           ) : (
                             <MapPin className="h-4 w-4 text-primary" />
                           )}
                         </div>
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium truncate max-w-[270px]">
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-sm font-medium truncate">
                             {location.name}
                           </span>
-                          <span className="text-xs text-muted-foreground truncate max-w-[270px]">
+                          <span className="text-xs text-muted-foreground truncate">
                             {location.place_formatted}
                           </span>
                         </div>
@@ -192,7 +252,7 @@ export default function MapSearch() {
                     </CommandItem>
                   ))}
                 </CommandGroup>
-              )}
+              ) : null}
             </CommandList>
           )}
         </Command>
@@ -206,12 +266,7 @@ export default function MapSearch() {
         />
       ))}
 
-      {selectedLocation && (
-        <LocationPopup
-          location={selectedLocation}
-          onClose={() => setSelectedLocation(null)}
-        />
-      )}
+      {selectedLocation && <LocationPopup location={selectedLocation} />}
     </>
   );
 }

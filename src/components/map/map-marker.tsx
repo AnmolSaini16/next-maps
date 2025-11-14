@@ -1,7 +1,8 @@
 "use client";
 
 import mapboxgl, { MarkerOptions } from "mapbox-gl";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
+import { createPortal } from "react-dom";
 
 import { useMap } from "@/context/map-context";
 import { LocationFeature } from "@/lib/mapbox/utils";
@@ -9,7 +10,7 @@ import { LocationFeature } from "@/lib/mapbox/utils";
 type Props = {
   longitude: number;
   latitude: number;
-  data: any;
+  data: LocationFeature;
   onHover?: ({
     isHovered,
     position,
@@ -40,69 +41,65 @@ export default function Marker({
   data,
   onHover,
   onClick,
-  ...props
+  ...markerOptions
 }: Props) {
   const { map } = useMap();
-  const markerRef = useRef<HTMLDivElement | null>(null);
-  let marker: mapboxgl.Marker | null = null;
-
-  const handleHover = (isHovered: boolean) => {
-    if (onHover && marker) {
-      onHover({
-        isHovered,
-        position: { longitude, latitude },
-        marker,
-        data,
-      });
-    }
-  };
-
-  const handleClick = () => {
-    if (onClick && marker) {
-      onClick({
-        position: { longitude, latitude },
-        marker,
-        data,
-      });
-    }
-  };
+  const elementRef = useRef<HTMLDivElement>(document.createElement("div"));
+  const markerRef = useRef<mapboxgl.Marker | null>(null);
+  const position = useMemo<[number, number]>(
+    () => [longitude, latitude],
+    [longitude, latitude]
+  );
 
   useEffect(() => {
-    const markerEl = markerRef.current;
-    if (!map || !markerEl) return;
+    if (!map) return;
 
-    const handleMouseEnter = () => handleHover(true);
-    const handleMouseLeave = () => handleHover(false);
-
-    // Add event listeners
-    markerEl.addEventListener("mouseenter", handleMouseEnter);
-    markerEl.addEventListener("mouseleave", handleMouseLeave);
-    markerEl.addEventListener("click", handleClick);
-
-    // Marker options
-    const options = {
-      element: markerEl,
-      ...props,
-    };
-
-    marker = new mapboxgl.Marker(options)
-      .setLngLat([longitude, latitude])
+    const el = elementRef.current;
+    const marker = new mapboxgl.Marker({ element: el, ...markerOptions })
+      .setLngLat(position)
       .addTo(map);
+    markerRef.current = marker;
+
+    const enter = () =>
+      onHover?.({
+        isHovered: true,
+        position: { longitude: position[0], latitude: position[1] },
+        marker,
+        data,
+      });
+
+    const leave = () =>
+      onHover?.({
+        isHovered: false,
+        position: { longitude: position[0], latitude: position[1] },
+        marker,
+        data,
+      });
+
+    const click = () =>
+      onClick?.({
+        position: { longitude: position[0], latitude: position[1] },
+        marker,
+        data,
+      });
+
+    el.addEventListener("mouseenter", enter);
+    el.addEventListener("mouseleave", leave);
+    el.addEventListener("click", click);
 
     return () => {
-      // Cleanup on unmount
-      if (marker) marker.remove();
-      if (markerEl) {
-        markerEl.removeEventListener("mouseenter", handleMouseEnter);
-        markerEl.removeEventListener("mouseleave", handleMouseLeave);
-        markerEl.removeEventListener("click", handleClick);
-      }
+      el.removeEventListener("mouseenter", enter);
+      el.removeEventListener("mouseleave", leave);
+      el.removeEventListener("click", click);
+      marker.remove();
+      markerRef.current = null;
     };
-  }, [map, longitude, latitude, props]);
+  }, [map, markerOptions, data, onHover, onClick]);
 
-  return (
-    <div>
-      <div ref={markerRef}>{children}</div>
-    </div>
-  );
+  useEffect(() => {
+    if (!markerRef.current) return;
+    markerRef.current.setLngLat(position);
+  }, [position]);
+
+  return createPortal(children, elementRef.current);
 }

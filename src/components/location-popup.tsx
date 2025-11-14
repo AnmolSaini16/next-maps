@@ -1,23 +1,14 @@
 import { LocationFeature, iconMap } from "@/lib/mapbox/utils";
 import { cn } from "@/lib/utils";
-import {
-  LocateIcon,
-  MapPin,
-  Navigation,
-  Star,
-  ExternalLink,
-} from "lucide-react";
+import { LocateIcon, MapPin } from "lucide-react";
 
-import { Button } from "./ui/button";
 import Popup from "./map/map-popup";
 import { Badge } from "./ui/badge";
-import { Separator } from "./ui/separator";
 
 type LocationPopupProps = {
   location: LocationFeature;
-  onClose?: () => void;
 };
-export function LocationPopup({ location, onClose }: LocationPopupProps) {
+export function LocationPopup({ location }: LocationPopupProps) {
   if (!location) return null;
 
   const { properties, geometry } = location;
@@ -47,11 +38,9 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
     <Popup
       latitude={lat}
       longitude={lng}
-      onClose={onClose}
       offset={15}
-      closeButton={true}
+      closeButton={false}
       closeOnClick={false}
-      className="location-popup"
       focusAfterOpen={false}
     >
       <div className="w-[300px] sm:w-[350px]">
@@ -106,51 +95,6 @@ export function LocationPopup({ location, onClose }: LocationPopupProps) {
             )}
           </div>
         )}
-
-        <Separator className="my-3" />
-
-        <div className="grid grid-cols-2 gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex items-center justify-center"
-            onClick={() => {
-              window.open(
-                `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
-                "_blank"
-              );
-            }}
-          >
-            <Navigation className="h-4 w-4 mr-1.5" />
-            Directions
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex items-center justify-center"
-            onClick={() => {
-              console.log("Saved location:", location);
-            }}
-          >
-            <Star className="h-4 w-4 mr-1.5" />
-            Save
-          </Button>
-
-          {properties?.external_ids?.website && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="col-span-2 flex items-center justify-center mt-1"
-              onClick={() => {
-                window.open(properties.external_ids?.website, "_blank");
-              }}
-            >
-              <ExternalLink className="h-4 w-4 mr-1.5" />
-              Visit Website
-            </Button>
-          )}
-        </div>
 
         <div className="mt-3 pt-2 border-t text-xs text-muted-foreground">
           <div className="flex justify-between items-center">

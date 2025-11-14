@@ -1,6 +1,7 @@
 "use client";
 
 import { useMap } from "@/context/map-context";
+import { cn } from "@/lib/utils";
 import mapboxgl from "mapbox-gl";
 import { useCallback, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
@@ -37,7 +38,7 @@ export default function Popup({
 
     const popupOptions: mapboxgl.PopupOptions = {
       ...props,
-      className: `mapboxgl-custom-popup ${className ?? ""}`,
+      className: cn("mapboxgl-custom-popup", className),
     };
 
     const popup = new mapboxgl.Popup(popupOptions)
@@ -51,9 +52,7 @@ export default function Popup({
       if (currentPopup) {
         currentPopup.remove();
       }
-
       marker.setPopup(popup);
-
       marker.togglePopup();
     } else if (latitude !== undefined && longitude !== undefined) {
       popup.setLngLat([longitude, latitude]).addTo(map);
@@ -61,7 +60,9 @@ export default function Popup({
 
     return () => {
       popup.off("close", handleClose);
-      popup.remove();
+      if (popup.isOpen()) {
+        popup.remove();
+      }
 
       if (marker && marker.getPopup()) {
         marker.setPopup(null);
