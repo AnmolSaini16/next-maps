@@ -21,7 +21,6 @@ https://github.com/user-attachments/assets/9caa968c-bfe1-44bf-a1dc-b375070a3e93
 - shadcn/ui
 - Mapbox GL JS
 - Mapbox Searchbox API
-- Geist font (via next/font)
 
 ## 🔍 Features
 
