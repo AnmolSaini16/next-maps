@@ -1,6 +1,6 @@
 # 🗺️ Modern Map in Next.js with Mapbox
 
-### Lightweight, clean and beautifully-designed map with Next.js, Mapbox, shadcn ui, and Tailwind. Customizable and extensible component design.
+#### Lightweight, clean and beautifully-designed map with Next.js, Mapbox, shadcn ui, and Tailwind. Customizable and extensible component design.
 
 https://github.com/user-attachments/assets/9caa968c-bfe1-44bf-a1dc-b375070a3e93
 
